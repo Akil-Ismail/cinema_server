@@ -24,7 +24,8 @@ try {
         "release_date" => "",
         "running_time" => "",
         "image" => "",
-        "language" => ""
+        "language" => "",
+        "hero_image" => ""
     ]);
     $movies = $movieModel->select($mysqli, [
         "id" => "",
@@ -34,7 +35,8 @@ try {
         "release_date" => "",
         "running_time" => "",
         "image" => "",
-        "language" => ""
+        "language" => "",
+        "hero_image" => ""
     ]);
 
     $result['data'] = $movies;
