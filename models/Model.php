@@ -16,4 +16,32 @@ abstract class Model
         $query->bind_param(str_repeat('s', count($values)), ...$values);
         return $query->execute();
     }
+
+    public function select(mysqli $mysqli, array $data, array $orConditions = [], array $andConditions = [])
+    {
+        $columns = implode(", ", array_keys($data));
+
+        // Build WHERE clause
+        $whereParts = [];
+        if (!empty($andConditions)) {
+            $whereParts[] = '(' . implode(' AND ', $andConditions) . ')';
+        }
+        if (!empty($orConditions)) {
+            $whereParts[] = '(' . implode(' OR ', $orConditions) . ')';
+        }
+        $conditions = !empty($whereParts) ? implode(' AND ', $whereParts) : '1';
+
+        if (empty($conditions)) {
+            $conditions = '1'; // Default condition to select all
+        }
+
+        $sql = sprintf("SELECT %s FROM %s WHERE %s", $columns, static::$table, $conditions);
+
+        $query = $mysqli->prepare($sql);
+        $query->execute();
+        $result = $query->get_result();
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        $query->close();
+        return $rows;
+    }
 }
