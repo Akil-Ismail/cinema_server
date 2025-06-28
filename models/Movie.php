@@ -11,6 +11,7 @@ class Movie extends Model
     private string $image;
     private string $hero_image;
     private string $language;
+    private string $trailer;
 
     protected static string $table = "movies";
 
@@ -61,6 +62,11 @@ class Movie extends Model
         return $this->hero_image;
     }
 
+    public function getTrailer(): string
+    {
+        return $this->trailer;
+    }
+
     public function getLanguage(): string
     {
         return $this->language;
@@ -101,6 +107,11 @@ class Movie extends Model
         $this->hero_image = $hero_image;
     }
 
+    public function setTrailer(string $trailer)
+    {
+        $this->trailer = $trailer;
+    }
+
     public function setLanguage(string $language)
     {
         $this->language = $language;
@@ -116,7 +127,7 @@ class Movie extends Model
             'running_time' => $this->running_time,
             'image' => $this->image,
             'hero_image' => $this->hero_image,
-            'language' => $this->language
+            'trailer' => $this->trailer,
         ];
     }
 }

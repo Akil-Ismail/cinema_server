@@ -24,25 +24,38 @@ try {
         "release_date" => "",
         "running_time" => "",
         "image" => "",
-        "language" => "",
-        "hero_image" => ""
-    ]);
-    $movies = $movieModel->select($mysqli, [
-        "id" => "",
-        "name" => "",
-        "description" => "",
-        "genre" => "",
-        "release_date" => "",
-        "running_time" => "",
-        "image" => "",
+        "trailer" => "",
         "language" => "",
         "hero_image" => ""
     ]);
 
-    $result['data'] = $movies;
-    $result['success'] = true;
-    echo json_encode($result);
-    return;
+    if (isset($_GET['id']) || !empty($_GET['id'])) {
+        $movies = $movieModel->select($mysqli, [
+            "id" => "",
+            "name" => "",
+            "description" => "",
+            "genre" => "",
+            "release_date" => "",
+            "running_time" => "",
+            "image" => "",
+            "trailer" => "",
+            "language" => "",
+            "hero_image" => ""
+        ], [], [], ['id'], [$_GET['id']]);
+        $result['data'] = $movies;
+        $result['success'] = true;
+        echo json_encode($result);
+        return;
+    } else {
+        $movies = $movieModel->select($mysqli, [
+            "id" => "",
+            "hero_image" => ""
+        ]);
+        $result['data'] = $movies;
+        $result['success'] = true;
+        echo json_encode($result);
+        return;
+    }
 } catch (Exception $e) {
     $result["success"] = false;
     $result['error'] = 'Something went wrong while fetching movies';

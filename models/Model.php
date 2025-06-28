@@ -17,27 +17,45 @@ abstract class Model
         return $query->execute();
     }
 
-    public function select(mysqli $mysqli, array $data, array $orConditions = [], array $andConditions = [])
-    {
+    public function select(
+        mysqli $mysqli,
+        array $data,
+        array $orKeys = [],
+        array $orParams = [],
+        array $andKeys = [],
+        array $andParams = []
+    ) {
         $columns = implode(", ", array_keys($data));
 
         // Build WHERE clause
         $whereParts = [];
-        if (!empty($andConditions)) {
-            $whereParts[] = '(' . implode(' AND ', $andConditions) . ')';
-        }
-        if (!empty($orConditions)) {
+        if (!empty($orKeys)) {
+            $orConditions = [];
+            foreach ($orKeys as $key) {
+                $orConditions[] = "$key = ?";
+            }
             $whereParts[] = '(' . implode(' OR ', $orConditions) . ')';
         }
-        $conditions = !empty($whereParts) ? implode(' AND ', $whereParts) : '1';
-
-        if (empty($conditions)) {
-            $conditions = '1'; // Default condition to select all
+        if (!empty($andKeys)) {
+            $andConditions = [];
+            foreach ($andKeys as $key) {
+                $andConditions[] = "$key = ?";
+            }
+            $whereParts[] = '(' . implode(' AND ', $andConditions) . ')';
         }
+        $conditions = !empty($whereParts) ? implode(' AND ', $whereParts) : '1';
 
         $sql = sprintf("SELECT %s FROM %s WHERE %s", $columns, static::$table, $conditions);
 
         $query = $mysqli->prepare($sql);
+
+        // Merge params in the order of appearance in the WHERE clause
+        $params = array_merge($orParams, $andParams);
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            $query->bind_param($types, ...$params);
+        }
+
         $query->execute();
         $result = $query->get_result();
         $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
