@@ -16,35 +16,45 @@ $result = [];
 try {
     $showtimeModel = new Showtime([]);
 
+    // Define columns to select, including the joined type attribute
+    $columns = [
+        "showtimes.id",
+        "showtimes.time",
+        "showtimes.date",
+        "showtimes.movie_id",
+        "showtimes.type_id",
+        "types.type",
+        "showtimes.theater_id"
+    ];
+
+    // JOIN clause to get type from types table
+    $join = "INNER JOIN types ON showtimes.type_id = types.id";
+
     // If filtering by movie_id
     if (isset($_GET['movie_id']) && !empty($_GET['movie_id'])) {
-        $showtimes = $showtimeModel->select(
+        $showtimes = $showtimeModel->innerSelect(
             $mysqli,
-            [
-                "id" => "",
-                "time" => "",
-                "date" => "",
-                "movie_id" => ""
-            ],
+            array_fill_keys($columns, ""), // keys as columns, values as empty string
             [],
             [],
-            ['movie_id'],
-            [$_GET['movie_id']]
+            ['showtimes.movie_id'],
+            [$_GET['movie_id']],
+            $join
         );
         $result['data'] = $showtimes;
         $result['success'] = true;
         echo json_encode($result);
         return;
     } else {
-        // Get all showtimes
-        $showtimes = $showtimeModel->select(
+        // Get all showtimes with type
+        $showtimes = $showtimeModel->innerSelect(
             $mysqli,
-            [
-                "id" => "",
-                "time" => "",
-                "date" => "",
-                "movie_id" => ""
-            ]
+            array_fill_keys($columns, ""),
+            [],
+            [],
+            [],
+            [],
+            $join
         );
         $result['data'] = $showtimes;
         $result['success'] = true;

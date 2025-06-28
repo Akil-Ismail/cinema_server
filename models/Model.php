@@ -62,4 +62,59 @@ abstract class Model
         $query->close();
         return $rows;
     }
+    public function innerSelect(
+        mysqli $mysqli,
+        array $data,
+        array $orKeys = [],
+        array $orParams = [],
+        array $andKeys = [],
+        array $andParams = [],
+        string $join = '' // Optional JOIN clause
+    ) {
+        $columns = implode(", ", array_keys($data));
+
+        // Build WHERE clause
+        $whereParts = [];
+        if (!empty($orKeys)) {
+            $orConditions = [];
+            foreach ($orKeys as $key) {
+                $orConditions[] = "$key = ?";
+            }
+            $whereParts[] = '(' . implode(' OR ', $orConditions) . ')';
+        }
+        if (!empty($andKeys)) {
+            $andConditions = [];
+            foreach ($andKeys as $key) {
+                $andConditions[] = "$key = ?";
+            }
+            $whereParts[] = '(' . implode(' AND ', $andConditions) . ')';
+        }
+        $conditions = !empty($whereParts) ? implode(' AND ', $whereParts) : '1';
+
+        // Add JOIN clause if provided
+        $joinClause = $join ? " $join " : "";
+
+        $sql = sprintf(
+            "SELECT %s FROM %s %s WHERE %s",
+            $columns,
+            static::$table,
+            $joinClause,
+            $conditions
+        );
+
+        $query = $mysqli->prepare($sql);
+
+        // Merge params in the order of appearance in the WHERE clause
+        $params = array_merge($orParams, $andParams);
+        if (!empty($params)) {
+            $types = str_repeat('s', count($params));
+            $query->bind_param($types, ...$params);
+        }
+
+        $query->execute();
+        $result = $query->get_result();
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+        $query->close();
+        return $rows;
+    }
 }
