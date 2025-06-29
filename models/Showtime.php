@@ -15,7 +15,6 @@ class Showtime extends Model
 
     public function __construct(array $data)
     {
-        $this->id = isset($data["id"]) ? (int)$data["id"] : 0;
         $this->time = $data["time"] ?? "";
         $this->date = $data["date"] ?? "";
         $this->movie_id = isset($data["movie_id"]) ? (int)$data["movie_id"] : 0;

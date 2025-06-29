@@ -117,4 +117,38 @@ abstract class Model
         $query->close();
         return $rows;
     }
+    public function update(
+        mysqli $mysqli,
+        array $data,
+        string $id
+    ) {
+        // Build SET clause
+        $setParts = [];
+        foreach (array_keys($data) as $key) {
+            $setParts[] = "$key = ?";
+        }
+        $setClause = implode(", ", $setParts);
+
+        // Combine all params (first set values, then where values)
+        $params = array_merge(array_values($data));
+
+        $sql = sprintf(
+            "UPDATE %s SET %s WHERE id = %s",
+            static::$table,
+            $setClause,
+            $id
+        );
+
+        $query = $mysqli->prepare($sql);
+        if (!$query) {
+            throw new Exception("Prepare failed: " . $mysqli->error);
+        }
+
+        $types = str_repeat('s', count($params));
+        $query->bind_param($types, ...$params);
+
+        $result = $query->execute();
+        $query->close();
+        return $result;
+    }
 }

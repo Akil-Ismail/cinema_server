@@ -12,7 +12,6 @@ class Theater extends Model
 
     public function __construct(array $data)
     {
-        $this->id = isset($data["id"]) ? (int)$data["id"] : 0;
         $this->standard_rows_count = isset($data["standard_rows_count"]) ? (int)$data["standard_rows_count"] : 0;
         $this->columns_count = isset($data["columns_count"]) ? (int)$data["columns_count"] : 0;
         $this->vip_rows_count = isset($data["vip_rows_count"]) ? (int)$data["vip_rows_count"] : 0;

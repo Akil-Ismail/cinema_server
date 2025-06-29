@@ -12,7 +12,6 @@ class Pricing extends Model
 
     public function __construct(array $data)
     {
-        $this->id = isset($data["id"]) ? (int)$data["id"] : 0;
         $this->standard = isset($data["standard"]) ? (float)$data["standard"] : 0.0;
         $this->vip = isset($data["vip"]) ? (float)$data["vip"] : 0.0;
         $this->type_id = isset($data["type_id"]) ? (int)$data["type_id"] : 0;

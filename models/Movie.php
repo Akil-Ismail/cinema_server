@@ -3,6 +3,7 @@ require_once("Model.php");
 
 class Movie extends Model
 {
+    private int $id;
     private string $name;
     private string $description;
     private string $genre;
@@ -17,12 +18,30 @@ class Movie extends Model
 
     public function __construct(array $data)
     {
+        if (empty($data)) {
+            $data =
+                [
+                    "name" => "",
+                    "description" => "",
+                    "genre" => "",
+                    "release_date" => "",
+                    "running_time" => "",
+                    "image" => "",
+                    "trailer" => "",
+                    "language" => "",
+                    "hero_image" => ""
+                ];
+        }
+        if (isset($data["id"])) {
+            $this->id = (int)$data["id"];
+        }
         $this->name = $data["name"];
         $this->description = $data["description"];
         $this->genre = $data["genre"];
         $this->release_date = $data["release_date"];
         $this->running_time = (int)$data["running_time"];
         $this->image = $data["image"];
+        $this->trailer = $data["trailer"];
         $this->language = $data["language"];
         $this->hero_image = $data["hero_image"];
     }

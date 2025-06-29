@@ -16,18 +16,7 @@ $result = [];
 
 try {
     // Fetch all movies
-    $movieModel = new Movie([
-        "id" => "",
-        "name" => "",
-        "description" => "",
-        "genre" => "",
-        "release_date" => "",
-        "running_time" => "",
-        "image" => "",
-        "trailer" => "",
-        "language" => "",
-        "hero_image" => ""
-    ]);
+    $movieModel = new Movie([]);
 
     if (isset($_GET['id']) || !empty($_GET['id'])) {
         $movies = $movieModel->select($mysqli, [
@@ -46,16 +35,18 @@ try {
         $result['success'] = true;
         echo json_encode($result);
         return;
-    } else {
-        $movies = $movieModel->select($mysqli, [
-            "id" => "",
-            "hero_image" => ""
-        ]);
-        $result['data'] = $movies;
-        $result['success'] = true;
-        echo json_encode($result);
-        return;
     }
+
+    $movies = $movieModel->select($mysqli, [
+
+        "id" => "",
+        "name" => "",
+        "hero_image" => ""
+    ]);
+    $result['data'] = $movies;
+    $result['success'] = true;
+    echo json_encode($result);
+    return;
 } catch (Exception $e) {
     $result["success"] = false;
     $result['error'] = 'Something went wrong while fetching movies';
