@@ -21,6 +21,7 @@ class Movie extends Model
         if (empty($data)) {
             $data =
                 [
+                    "id" => 0,
                     "name" => "",
                     "description" => "",
                     "genre" => "",
@@ -32,9 +33,7 @@ class Movie extends Model
                     "hero_image" => ""
                 ];
         }
-        if (isset($data["id"])) {
-            $this->id = (int)$data["id"];
-        }
+
         $this->name = $data["name"];
         $this->description = $data["description"];
         $this->genre = $data["genre"];

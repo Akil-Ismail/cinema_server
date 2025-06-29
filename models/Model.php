@@ -151,4 +151,19 @@ abstract class Model
         $query->close();
         return $result;
     }
+
+    public function delete(
+        mysqli $mysqli,
+        string $id
+    ) {
+        $sql = sprintf("DELETE FROM %s WHERE id = ?", static::$table);
+        $query = $mysqli->prepare($sql);
+        if (!$query) {
+            throw new Exception("Prepare failed: " . $mysqli->error);
+        }
+        $query->bind_param('i', $id);
+        $result = $query->execute();
+        $query->close();
+        return $result;
+    }
 }
