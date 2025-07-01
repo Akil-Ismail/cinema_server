@@ -96,3 +96,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     echo json_encode($result);
     return;
 }
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $result = [];
+    try {
+        $showtimeData = [
+            "time" => $_POST["time"] ?? "",
+            "date" => $_POST["date"] ?? "",
+            "theater_id" => $_POST["theater_id"] ?? "",
+            "type_id" => $_POST["type_id"] ?? "",
+            "movie_id" => $_POST["movie_id"] ?? ""
+        ];
+
+        // Remove empty fields from update/insert
+        $showtimeData = array_filter($showtimeData, function ($v) {
+            return $v !== "";
+        });
+
+        $showtimeModel = new Showtime([]);
+        if (empty($showtimeData)) {
+            $result['error'] = 'No data to insert';
+            $result['success'] = false;
+            http_response_code(400);
+            echo json_encode($result);
+            return;
+        }
+        $success = $showtimeModel->insert($mysqli, $showtimeData);
+        if ($success) {
+            $result['success'] = true;
+            $result['message'] = 'Showtime added successfully';
+        } else {
+            $result['success'] = false;
+            $result['error'] = 'Failed to add showtime';
+            http_response_code(500);
+        }
+
+        echo json_encode($result);
+        return;
+    } catch (Exception $e) {
+        $result["success"] = false;
+        $result['error'] = 'Something went wrong while updating showtime';
+        http_response_code(500);
+        echo json_encode($result);
+        return;
+    }
+}
