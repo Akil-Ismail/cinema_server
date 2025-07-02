@@ -14,10 +14,68 @@ $result = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Check if tickets array is sent (for bulk insert)
+        $ticketsArray = $_POST['tickets'] ?? null;
+
+        // If not, try to get JSON body (for application/json requests)
+        if (!$ticketsArray) {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $ticketsArray = $input['tickets'] ?? null;
+        }
+
+        // If tickets array is present, handle bulk insert
+        if ($ticketsArray && is_array($ticketsArray)) {
+            $hasError = false;
+            $errorMessage = '';
+            foreach ($ticketsArray as $ticket) {
+                $user_id = $ticket['user_id'] ?? null;
+                $theater_id = $ticket['theater_id'] ?? null;
+                $showtime_id = $ticket['showtime_id'] ?? null;
+                $seat = $ticket['seat'] ?? null;
+                $row = $ticket['row'] ?? null;
+
+                if (!$user_id || !$theater_id || !$showtime_id || !$seat) {
+                    $hasError = true;
+                    $errorMessage = 'All fields are required';
+                    break;
+                }
+
+                $ticketData = [
+                    'user_id' => $user_id,
+                    'theater_id' => $theater_id,
+                    'showtime_id' => $showtime_id,
+                    'seat' => $seat,
+                    'row' => $row
+                ];
+
+                $ticketModel = new Ticket($ticketData);
+                $success = $ticketModel->insert($mysqli, $ticketData);
+
+                if (!$success) {
+                    $hasError = true;
+                    $errorMessage = 'Failed to create ticket';
+                    break;
+                }
+            }
+
+            if ($hasError) {
+                $result['success'] = false;
+                $result['error'] = $errorMessage;
+                http_response_code(400);
+            } else {
+                $result['success'] = true;
+                $result['message'] = 'All tickets created successfully';
+            }
+            echo json_encode($result);
+            return;
+        }
+
+        // Fallback: single ticket insert (legacy)
         $user_id = $_POST['user_id'] ?? null;
         $theater_id = $_POST['theater_id'] ?? null;
         $showtime_id = $_POST['showtime_id'] ?? null;
         $seat = $_POST['seat'] ?? null;
+        $row = $_POST['row'] ?? null;
 
         if (!$user_id || !$theater_id || !$showtime_id || !$seat) {
             $result['success'] = false;
@@ -31,7 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'user_id' => $user_id,
             'theater_id' => $theater_id,
             'showtime_id' => $showtime_id,
-            'seat' => $seat
+            'seat' => $seat,
+            'row' => $row
         ];
 
         $ticketModel = new Ticket($ticketData);
@@ -66,7 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'user_id' => '',
             'theater_id' => '',
             'showtime_id' => '',
-            'seat' => ''
+            'seat' => '',
+            'row' => ''
         ];
 
         $whereKeys = [];

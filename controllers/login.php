@@ -38,7 +38,8 @@ try {
         "lname" => "",
         "email" => "",
         "phone" => "",
-        "password" => ""
+        "password" => "",
+        "payment" => 0
     ]);
 
     $users = $userModel->select(
