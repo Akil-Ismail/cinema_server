@@ -119,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
             "id" => "",
             "name" => "",
-            "hero_image" => ""
+            "hero_image" => "",
+            "image" => ""
         ]);
         $result['data'] = $movies;
         $result['success'] = true;
