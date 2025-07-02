@@ -9,6 +9,7 @@ class User extends Model
     private string $phone;
     private string $email;
     private string $password;
+    private int $payment;
 
     protected static string $table = "users";
 
@@ -19,6 +20,7 @@ class User extends Model
         $this->phone = $data["phone"];
         $this->email = $data["email"];
         $this->password = $data["password"];
+        $this->payment = $data["payment"];
     }
 
     public function  getFname(): string
@@ -74,7 +76,8 @@ class User extends Model
             'lname' => $this->lname,
             'phone' => $this->phone,
             'email' => $this->email,
-            'password' => password_hash($this->password, PASSWORD_DEFAULT)
+            'password' => password_hash($this->password, PASSWORD_DEFAULT),
+            'payment' => $this->payment,
         ];
     }
 

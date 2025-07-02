@@ -49,7 +49,8 @@ try {
             "lname" => "",
             "email" => "",
             "phone" => "",
-            "password" => ""
+            "password" => "",
+            "payment" => ""
         ],
         [
             "email",
@@ -70,7 +71,8 @@ try {
             "email" => $userData["email"],
             "fname" => $userData["fname"],
             "lname" => $userData["lname"],
-            "phone" => $userData["phone"]
+            "phone" => $userData["phone"],
+            "payment" => $userData["payment"]
         ];
         echo json_encode($result);
         return;
