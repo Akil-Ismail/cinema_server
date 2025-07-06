@@ -5,8 +5,10 @@ abstract class Model
     protected static string $table;
     protected static string $primary_key = "id";
 
-    public function insert(mysqli $mysqli, array $data)
-    {
+    public function insert(
+        mysqli $mysqli,
+        array $data
+    ) {
         $columns = implode(", ", array_keys($data));
         $placeholders = implode(", ", array_fill(0, count($data), '?'));
         $values = array_values($data);
