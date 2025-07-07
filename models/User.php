@@ -15,12 +15,24 @@ class User extends Model
 
     public function __construct(array $data)
     {
+        if (empty($data)) {
+            $data =
+                [
+                    "id" => 0,
+                    "fname" => "",
+                    "lname" => "",
+                    "email" => "",
+                    "phone" => "",
+                    "password" => "",
+                    "payment" => 0
+                ];
+        }
         $this->fname = $data["fname"];
         $this->lname = $data["lname"];
         $this->phone = $data["phone"];
         $this->email = $data["email"];
         $this->password = $data["password"];
-        $this->payment = $data["payment"];
+        $this->payment = $data['payment'] ?? null;
     }
 
     public function  getFname(): string

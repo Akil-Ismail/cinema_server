@@ -1,8 +1,9 @@
 <?php
+header("Access-Control-Allow-Methods: GET, POST");
+header("Access-Control-Allow-Origin: *");
+
 require(__DIR__ . "/routes/api.php");
 global $apis;
-echo "<script>console.log(" . json_encode($apis) . ");</script>";
-
 
 
 $base_dir = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
