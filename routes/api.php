@@ -8,4 +8,6 @@ header("Access-Control-Allow-Origin: *");
 $apis = [
     '/login'         => ['controller' => 'UserController', 'method' => 'login'],
     '/signup'         => ['controller' => 'UserController', 'method' => 'signup'],
+    '/getMovies'         => ['controller' => 'MovieController', 'method' => 'getMovies'],
+    '/getMovie'         => ['controller' => 'MovieController', 'method' => 'getMovie'],
 ];
